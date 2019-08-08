@@ -1,0 +1,6 @@
+# excluse
+.idea
+.vscode
+store/.idea
+node_modules
+node_modules/
