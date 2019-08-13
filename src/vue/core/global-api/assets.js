@@ -6,12 +6,16 @@ import { isPlainObject, validateComponentName } from '../util/index'
 export function initAssetRegisters (Vue: GlobalAPI) {
   /**
    * Create asset registration methods.
+   * 定义directive、component
+   * Vue.directive(id, definition)
+   * Vue.component(id, definition)
    */
   ASSET_TYPES.forEach(type => {
     Vue[type] = function (
       id: string,
       definition: Function | Object
     ): Function | Object | void {
+      // 获取全局组件的定义参数
       if (!definition) {
         return this.options[type + 's'][id]
       } else {

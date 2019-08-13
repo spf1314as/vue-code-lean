@@ -43,6 +43,7 @@ Vue.prototype.$mount = function (
 }
 
 // devtools global hook
+// istanbul 代码覆盖率测试
 /* istanbul ignore next */
 if (inBrowser) {
   setTimeout(() => {

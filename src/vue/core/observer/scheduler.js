@@ -39,7 +39,7 @@ function resetSchedulerState () {
 // if the page has thousands of event listeners. Instead, we take a timestamp
 // every time the scheduler flushes and use that for all event listeners
 // attached during that flush.
-export let currentFlushTimestamp = 0
+export letcurrentFlushTimestamp = 0
 
 // Async edge case fix requires storing an event listener's attach timestamp.
 let getNow: () => number = Date.now

@@ -36,6 +36,7 @@ export function initMixin (Vue: Class<Component>) {
       initInternalComponent(vm, options)
     } else {
       vm.$options = mergeOptions(
+        // 获取vm构造函数中选项进行合并到当前实例上
         resolveConstructorOptions(vm.constructor),
         options || {},
         vm
@@ -49,10 +50,10 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
+    initLifecycle(vm) // 重置声明周期参数
+    initEvents(vm) //更新events
     initRender(vm)
-    callHook(vm, 'beforeCreate')
+    callHook(vm, 'beforeCreate') // 调用声明周期hook同时会触发hook:beforeCreate的on事件
     initInjections(vm) // resolve injections before data/props
     initState(vm)
     initProvide(vm) // resolve provide after data/props
@@ -64,7 +65,7 @@ export function initMixin (Vue: Class<Component>) {
       mark(endTag)
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
-
+    // 挂载到dom上
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }

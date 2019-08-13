@@ -57,7 +57,9 @@ export function createCompilerCreator (baseCompile: Function): Function {
       }
 
       finalOptions.warn = warn
-
+      /**
+       * compiled = {ast, render:string, staticRenderFns: funcs}
+       */
       const compiled = baseCompile(template.trim(), finalOptions)
       if (process.env.NODE_ENV !== 'production') {
         detectErrors(compiled.ast, warn)
@@ -68,7 +70,7 @@ export function createCompilerCreator (baseCompile: Function): Function {
     }
 
     return {
-      compile,
+      compile, //  compiled = {ast, render:string, staticRenderFns: funcs}
       compileToFunctions: createCompileToFunctionFn(compile)
     }
   }

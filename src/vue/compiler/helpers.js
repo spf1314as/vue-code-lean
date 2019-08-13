@@ -68,7 +68,7 @@ function prependModifierMarker (symbol: string, name: string, dynamic?: boolean)
 
 export function addHandler (
   el: ASTElement,
-  name: string,
+  name: string, // event
   value: string,
   modifiers: ?ASTModifiers,
   important?: boolean,

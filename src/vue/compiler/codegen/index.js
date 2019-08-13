@@ -51,7 +51,12 @@ export function generate (
     staticRenderFns: state.staticRenderFns
   }
 }
-
+/**
+ * 
+ * @param {*} el 
+ * @param {*} state 
+ * @return {string} code
+ */
 export function genElement (el: ASTElement, state: CodegenState): string {
   if (el.parent) {
     el.pre = el.pre || el.parent.pre

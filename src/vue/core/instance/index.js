@@ -16,7 +16,8 @@ function Vue (options) {
 
 initMixin(Vue)
 stateMixin(Vue)
-eventsMixin(Vue)
+eventsMixin(Vue) // 定义事件$on、$emit、$off、$once
+// 原型对象上定义声明周期hook _update $forceUpdate $destroy
 lifecycleMixin(Vue)
 renderMixin(Vue)
 

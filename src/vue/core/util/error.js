@@ -17,7 +17,7 @@ export function handleError (err: Error, vm: any, info: string) {
         const hooks = cur.$options.errorCaptured
         if (hooks) {
           for (let i = 0; i < hooks.length; i++) {
-            try {
+            try {// 返回false时不会再向上冒泡
               const capture = hooks[i].call(cur, err, vm, info) === false
               if (capture) return
             } catch (e) {
@@ -35,7 +35,7 @@ export function handleError (err: Error, vm: any, info: string) {
 
 export function invokeWithErrorHandling (
   handler: Function,
-  context: any,
+  context: any, //this
   args: null | any[],
   vm: any,
   info: string

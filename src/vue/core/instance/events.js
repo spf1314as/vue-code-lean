@@ -74,7 +74,7 @@ export function eventsMixin (Vue: Class<Component>) {
       vm.$off(event, on)
       fn.apply(vm, arguments)
     }
-    on.fn = fn
+    on.fn = fn // 为了取消fn函数的订阅 on函数库定义的，因此需要用.fn来标识监听的函数
     vm.$on(event, on)
     return vm
   }

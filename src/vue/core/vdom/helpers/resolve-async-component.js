@@ -15,6 +15,7 @@ import {
 import { createEmptyVNode } from 'core/vdom/vnode'
 import { currentRenderingInstance } from 'core/instance/render'
 
+// 确定是import引入的模块
 function ensureCtor (comp: any, base) {
   if (
     comp.__esModule ||
@@ -125,7 +126,7 @@ export function resolveAsyncComponent (
         if (isDef(res.error)) {
           factory.errorComp = ensureCtor(res.error, baseCtor)
         }
-
+        // loading
         if (isDef(res.loading)) {
           factory.loadingComp = ensureCtor(res.loading, baseCtor)
           if (res.delay === 0) {
@@ -140,7 +141,7 @@ export function resolveAsyncComponent (
             }, res.delay || 200)
           }
         }
-
+        // timeout
         if (isDef(res.timeout)) {
           timerTimeout = setTimeout(() => {
             timerTimeout = null

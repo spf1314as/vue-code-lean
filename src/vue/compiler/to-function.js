@@ -57,6 +57,7 @@ export function createCompileToFunctionFn (compile: Function): Function {
     }
 
     // compile
+    // compile = {ast, render: string,staticRenderFns: funcs, errors: array, tips: array}
     const compiled = compile(template, options)
 
     // check compilation errors/tips

@@ -56,7 +56,8 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
-  Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
+  // hydrating 保湿
+    Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
     const prevVnode = vm._vnode
@@ -137,13 +138,14 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
   }
 }
-
+// mounted hook
 export function mountComponent (
   vm: Component,
   el: ?Element,
   hydrating?: boolean
 ): Component {
   vm.$el = el
+  // 没有render 函数时
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
@@ -343,6 +345,7 @@ export function callHook (vm: Component, hook: string) {
       invokeWithErrorHandling(handlers[i], vm, null, vm, info)
     }
   }
+  //_hasHookEvent表示生命周期事件以hook:开头例如：hook:created
   if (vm._hasHookEvent) {
     vm.$emit('hook:' + hook)
   }
