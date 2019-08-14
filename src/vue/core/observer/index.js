@@ -15,7 +15,7 @@ import {
   isValidArrayIndex,
   isServerRendering
 } from '../util/index'
-
+// push pop shift unshift splice
 const arrayKeys = Object.getOwnPropertyNames(arrayMethods)
 
 /**
@@ -45,13 +45,16 @@ export class Observer {
     this.vmCount = 0
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
-      if (hasProto) {
+      if (hasProto) { // 存在 '__proto__'
+        // arrayMethods包装过拦截响应式处理的变异数组原型
         protoAugment(value, arrayMethods)
       } else {
+        // 一个定义 定义push、shift
         copyAugment(value, arrayMethods, arrayKeys)
       }
       this.observeArray(value)
     } else {
+      // reactive only object
       this.walk(value)
     }
   }
@@ -64,6 +67,7 @@ export class Observer {
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
+      // 定义响应式数据
       defineReactive(obj, keys[i])
     }
   }
@@ -120,7 +124,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     (Array.isArray(value) || isPlainObject(value)) &&
     Object.isExtensible(value) &&
     !value._isVue
-  ) {
+  ) {// 值是数组是创建一个Observer
     ob = new Observer(value)
   }
   if (asRootData && ob) {
@@ -164,7 +168,7 @@ export function defineReactive (
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
-            dependArray(value)
+            dependArray(value) // 递归的收集依赖
           }
         }
       }

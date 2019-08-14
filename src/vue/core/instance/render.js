@@ -58,6 +58,13 @@ export function setCurrentRenderingInstance (vm: Component) {
   currentRenderingInstance = vm
 }
 
+/**
+ * Vue原型对象上增加 render辅助函数
+ * 定义并且绑定nextTick函数
+ * 定义_render函数
+ * @param {*} Vue 
+ * 
+ */
 export function renderMixin (Vue: Class<Component>) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)

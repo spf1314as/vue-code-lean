@@ -72,7 +72,7 @@ function flushSchedulerQueue () {
   currentFlushTimestamp = getNow()
   flushing = true
   let watcher, id
-
+  // well 更新的先后顺序
   // Sort queue before flush.
   // This ensures that:
   // 1. Components are updated from parent to child. (because parent is always
@@ -85,6 +85,7 @@ function flushSchedulerQueue () {
 
   // do not cache length because more watchers might be pushed
   // as we run existing watchers
+  // fire watch callback
   for (index = 0; index < queue.length; index++) {
     watcher = queue[index]
     if (watcher.before) {
@@ -92,7 +93,7 @@ function flushSchedulerQueue () {
     }
     id = watcher.id
     has[id] = null
-    watcher.run()
+    watcher.run() //新旧值比较，触发回调
     // in dev build, check and stop circular updates.
     if (process.env.NODE_ENV !== 'production' && has[id] != null) {
       circular[id] = (circular[id] || 0) + 1
@@ -118,6 +119,7 @@ function flushSchedulerQueue () {
 
   // call component updated and activated hooks
   callActivatedHooks(activatedQueue)
+  // updated hooks
   callUpdatedHooks(updatedQueue)
 
   // devtool hook
@@ -168,6 +170,7 @@ export function queueWatcher (watcher: Watcher) {
     if (!flushing) {
       queue.push(watcher)
     } else {
+      //when happen ?
       // if already flushing, splice the watcher based on its id
       // if already past its id, it will be run next immediately.
       let i = queue.length - 1

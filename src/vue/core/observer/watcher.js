@@ -29,7 +29,7 @@ export default class Watcher {
   cb: Function;
   id: number;
   deep: boolean;
-  user: boolean;
+  user: boolean; // 是不是自定的watcher
   lazy: boolean;
   sync: boolean;
   dirty: boolean;
@@ -49,10 +49,12 @@ export default class Watcher {
     options?: ?Object,
     isRenderWatcher?: boolean
   ) {
+    //this = new Watcher()
     this.vm = vm
     if (isRenderWatcher) {
       vm._watcher = this
     }
+
     vm._watchers.push(this)
     // options
     if (options) {
@@ -77,8 +79,9 @@ export default class Watcher {
       : ''
     // parse expression for getter
     if (typeof expOrFn === 'function') {
-      this.getter = expOrFn
+      this.getter = expOrFn // watch返回值
     } else {
+      // parsePath => (obj) => obj[item1][item2][item3]...[itemn]
       this.getter = parsePath(expOrFn)
       if (!this.getter) {
         this.getter = noop
@@ -97,12 +100,14 @@ export default class Watcher {
 
   /**
    * Evaluate the getter, and re-collect dependencies.
+   * @return value
    */
   get () {
     pushTarget(this)
     let value
     const vm = this.vm
     try {
+      // bind vm 到this获取监听到的值 'a.b.c' this[a][b][c]
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {
@@ -113,7 +118,9 @@ export default class Watcher {
     } finally {
       // "touch" every property so they are all tracked as
       // dependencies for deep watching
+      // {handler:fn, deep: true}
       if (this.deep) {
+        // what?
         traverse(value)
       }
       popTarget()
@@ -124,6 +131,7 @@ export default class Watcher {
 
   /**
    * Add a dependency to this directive.
+   * 
    */
   addDep (dep: Dep) {
     const id = dep.id
@@ -168,6 +176,7 @@ export default class Watcher {
     } else if (this.sync) {
       this.run()
     } else {
+      // 触发watcher队列更新
       queueWatcher(this)
     }
   }
@@ -175,6 +184,7 @@ export default class Watcher {
   /**
    * Scheduler job interface.
    * Will be called by the scheduler.
+   * 比较新旧值，触发回调函数
    */
   run () {
     if (this.active) {
