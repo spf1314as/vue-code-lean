@@ -10,11 +10,18 @@
 // _c('div', { attrs: bindDynamicKeys({ "id": "app" }, [key, value]) })
 
 import { warn } from 'core/util/debug'
-
+/**
+ * baseObj => {key: value, key: value, key: value}
+ * values => [key, value, key, value, key, value]
+ * @param {*} baseObj 
+ * @param {*} values 
+ */
 export function bindDynamicKeys (baseObj: Object, values: Array<any>): Object {
   for (let i = 0; i < values.length; i += 2) {
     const key = values[i]
     if (typeof key === 'string' && key) {
+      // good job
+      // 触发get转化为响应式
       baseObj[values[i]] = values[i + 1]
     } else if (process.env.NODE_ENV !== 'production' && key !== '' && key !== null) {
       // null is a speical value for explicitly removing a binding

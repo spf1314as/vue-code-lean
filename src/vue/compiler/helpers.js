@@ -158,6 +158,7 @@ export function getRawBindingAttr (
     el.rawAttrsMap[name]
 }
 
+// 解析 绑定的属性值
 export function getBindingAttr (
   el: ASTElement,
   name: string,
@@ -175,7 +176,9 @@ export function getBindingAttr (
     }
   }
 }
-
+//
+// attrsMap  used in codegen
+// attrsList  used in processed
 // note: this only removes the attr from the Array (attrsList) so that it
 // doesn't get processed by processAttrs.
 // By default it does NOT remove it from the map (attrsMap) because the map is

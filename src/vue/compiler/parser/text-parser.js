@@ -38,7 +38,7 @@ export function parseText (
     }
     // tag token
     const exp = parseFilters(match[1].trim())
-    tokens.push(`_s(${exp})`)
+    tokens.push(`_s(${exp})`) // _s => toString
     rawTokens.push({ '@binding': exp })
     lastIndex = index + match[0].length
   }

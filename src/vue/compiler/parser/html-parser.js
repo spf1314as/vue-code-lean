@@ -183,7 +183,11 @@ export function parseHTML (html, options) {
     index += n
     html = html.substring(n)
   }
-
+  /**
+   * 1. 正则匹配标签开头结尾
+   * 2. 正则匹配动态、静态属性
+   * @return {object} {tagName: string, attrs: [], start: number}
+   */
   function parseStartTag () {
     const start = html.match(startTagOpen)
     if (start) {

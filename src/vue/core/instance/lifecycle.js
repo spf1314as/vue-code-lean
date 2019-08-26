@@ -94,7 +94,17 @@ export function lifecycleMixin (Vue: Class<Component>) {
       vm._watcher.update()
     }
   }
-
+  /**
+   * 1. callHook beforeDestory
+   * 2. 从父组件中移除该vm
+   * 3. 去除watcher的vm
+   * 4. 去除vm中的watchers
+   * 5. vmCount--
+   * 6. callHook destroyed
+   * 7. 取消vm上的事件监听
+   * 8. 
+   * 
+   */
   Vue.prototype.$destroy = function () {
     const vm: Component = this
     if (vm._isBeingDestroyed) {
@@ -142,7 +152,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
 export function mountComponent (
   vm: Component,
   el: ?Element,
-  hydrating?: boolean
+  hydrating?: boolean // vm.$mount.(el, false)
 ): Component {
   vm.$el = el
   // 没有render 函数时
@@ -183,11 +193,13 @@ export function mountComponent (
       measure(`vue ${name} render`, startTag, endTag)
 
       mark(startTag)
+      // _update what?
       vm._update(vnode, hydrating)
       mark(endTag)
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+    // 补丁更新
     updateComponent = () => {
       vm._update(vm._render(), hydrating)
     }
@@ -196,6 +208,10 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+  /**
+   * 新建watcher监听render之后的变化
+   * (vm, expOrFn, callback, options, isRenderWatcher)
+   */
   new Watcher(vm, updateComponent, noop, {
     before () {
       if (vm._isMounted && !vm._isDestroyed) {

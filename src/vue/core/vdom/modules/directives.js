@@ -21,6 +21,7 @@ function updateDirectives (oldVnode: VNodeWithData, vnode: VNodeWithData) {
 function _update (oldVnode, vnode) {
   const isCreate = oldVnode === emptyNode
   const isDestroy = vnode === emptyNode
+  //oldDirs = {rawName.modifier1.modifier2: dir}
   const oldDirs = normalizeDirectives(oldVnode.data.directives, oldVnode.context)
   const newDirs = normalizeDirectives(vnode.data.directives, vnode.context)
 
@@ -95,9 +96,10 @@ function normalizeDirectives (
     dir = dirs[i]
     if (!dir.modifiers) {
       // $flow-disable-line
-      dir.modifiers = emptyModifiers
+      dir.modifiers = emptyModifiers // {}
     }
     res[getRawDirName(dir)] = dir
+    // def 标识指令的定义
     dir.def = resolveAsset(vm.$options, 'directives', dir.name, true)
   }
   // $flow-disable-line

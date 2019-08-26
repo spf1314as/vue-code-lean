@@ -56,7 +56,13 @@ let platformIsPreTag
 let platformMustUseProp
 let platformGetTagNamespace
 let maybeComponent
-
+// 生成元素的描述对象
+/**
+ * 
+ * @param {*} tag 
+ * @param {Array<object>} attrs  =>  [{name: xxx, value: xxx}]
+ * @param {*} parent 
+ */
 export function createASTElement (
   tag: string,
   attrs: Array<ASTAttr>,
@@ -66,7 +72,7 @@ export function createASTElement (
     type: 1,
     tag,
     attrsList: attrs,
-    attrsMap: makeAttrsMap(attrs),
+    attrsMap: makeAttrsMap(attrs), // {name: value}
     rawAttrsMap: {},
     parent,
     children: []
@@ -220,7 +226,7 @@ export function parse (
       if (isIE && ns === 'svg') {
         attrs = guardIESVGBug(attrs)
       }
-
+      //element =  {type, tag, attrsList, attrsMap, rawAttrsMap, parent, children}
       let element: ASTElement = createASTElement(tag, attrs, currentParent)
       if (ns) {
         element.ns = ns
@@ -430,7 +436,7 @@ export function processElement (
   element: ASTElement,
   options: CompilerOptions
 ) {
-  processKey(element)
+  processKey(element) // el.key
 
   // determine whether this is a plain element after
   // removing structural attributes
@@ -440,10 +446,10 @@ export function processElement (
     !element.attrsList.length
   )
 
-  processRef(element)
-  processSlotContent(element)
-  processSlotOutlet(element)
-  processComponent(element)
+  processRef(element) // ele.ref , ele.refInFor 是否出现在v-for当中
+  processSlotContent(element) // ele.slotScope
+  processSlotOutlet(element) // key 不能出现在slot标签上面
+  processComponent(element) // el.component 解析component标签 el.inlineTemplete
   for (let i = 0; i < transforms.length; i++) {
     element = transforms[i](element, options) || element
   }
@@ -451,6 +457,8 @@ export function processElement (
   return element
 }
 
+// 解析key属性值
+// 校验key值得合理性
 function processKey (el) {
   const exp = getBindingAttr(el, 'key')
   if (exp) {
@@ -477,7 +485,10 @@ function processKey (el) {
     el.key = exp
   }
 }
-
+/**
+ * refInFor是否出现在v-for当中
+ * @param {any} el 
+ */
 function processRef (el) {
   const ref = getBindingAttr(el, 'ref')
   if (ref) {
@@ -508,6 +519,10 @@ type ForParseResult = {
   iterator2?: string;
 };
 
+/**
+ * 解析v-for
+ * @param {*} exp 
+ */
 export function parseFor (exp: string): ?ForParseResult {
   const inMatch = exp.match(forAliasRE)
   if (!inMatch) return
@@ -796,7 +811,7 @@ function processAttrs (el) {
           if (modifiers.camel && !isDynamic) {
             name = camelize(name)
           }
-          if (modifiers.sync) {
+          if (modifiers.sync) { // v-bind:title.sync => v-on:update:title= ''
             syncGen = genAssignmentCode(value, `$event`)
             if (!isDynamic) {
               addHandler(
@@ -861,6 +876,8 @@ function processAttrs (el) {
             isDynamic = true
           }
         }
+        // el.directives.push({name, rawName, value, arg, isDynamicArg, modifiers, start, end})
+        // el.plain = false
         addDirective(el, name, rawName, value, arg, isDynamic, modifiers, list[i])
         if (process.env.NODE_ENV !== 'production' && name === 'model') {
           checkForAliasModel(el, value)
@@ -891,7 +908,10 @@ function processAttrs (el) {
     }
   }
 }
-
+/**
+ * 检查该组件是否是由v-for渲染出来的
+ * @param {*} el 
+ */
 function checkInFor (el: ASTElement): boolean {
   let parent = el
   while (parent) {

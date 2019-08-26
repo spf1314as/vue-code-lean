@@ -44,6 +44,13 @@ function createOnceHandler (event, handler, capture) {
 // safe to exclude.
 const useMicrotaskFix = isUsingMicroTask && !(isFF && Number(isFF[1]) <= 53)
 
+/**
+ * 兼容火狐微任务触发两次的问题
+ * @param {*} name 
+ * @param {*} handler 
+ * @param {*} capture 
+ * @param {*} passive 
+ */
 function add (
   name: string,
   handler: Function,
@@ -109,6 +116,7 @@ function updateDOMListeners (oldVnode: VNodeWithData, vnode: VNodeWithData) {
   const on = vnode.data.on || {}
   const oldOn = oldVnode.data.on || {}
   target = vnode.elm
+  // 事件兼容性 转化
   normalizeEvents(on)
   updateListeners(on, oldOn, add, remove, createOnceHandler, vnode.context)
   target = undefined

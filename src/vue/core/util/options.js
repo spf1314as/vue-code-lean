@@ -25,8 +25,9 @@ import {
  * Option overwriting strategies are functions that handle
  * how to merge a parent option value and a child option
  * value into the final value.
+ * Strategies 策略
  */
-const strats = config.optionMergeStrategies
+const strats = config.optionMergeStrategies ={}
 
 /**
  * Options with restrictions
@@ -45,6 +46,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 /**
  * Helper that recursively merges two data objects together.
+ * 检查__ob__ 是否是响应式
+ * 深拷贝form 到 to
  */
 function mergeData (to: Object, from: ?Object): Object {
   if (!from) return to
@@ -155,7 +158,7 @@ function mergeHook (
         : [childVal]
     : parentVal
   return res
-    ? dedupeHooks(res)
+    ? dedupeHooks(res) //相同的hook只能出现一次
     : res
 }
 
@@ -294,26 +297,30 @@ export function validateComponentName (name: string) {
 /**
  * Ensure all props option syntax are normalized into the
  * Object-based format.
+ * @return {object} {camelize: {type: any}}
  */
 function normalizeProps (options: Object, vm: ?Component) {
   const props = options.props
   if (!props) return
   const res = {}
   let i, val, name
+  // props: ['props1', 'props2', 'props3']
   if (Array.isArray(props)) {
     i = props.length
     while (i--) {
       val = props[i]
       if (typeof val === 'string') {
+        // 驼峰式
         name = camelize(val)
         res[name] = { type: null }
       } else if (process.env.NODE_ENV !== 'production') {
         warn('props must be strings when using array syntax.')
       }
     }
-  } else if (isPlainObject(props)) {
+  } else if (isPlainObject(props)) {// props: {props1: {}}
     for (const key in props) {
       val = props[key]
+      // 蛇形转为驼峰
       name = camelize(key)
       res[name] = isPlainObject(val)
         ? val
@@ -358,6 +365,7 @@ function normalizeInject (options: Object, vm: ?Component) {
 
 /**
  * Normalize raw function directives into object format.
+ * directives:{[key:string]: {bind: ,update: }}
  */
 function normalizeDirectives (options: Object) {
   const dirs = options.directives
@@ -391,15 +399,17 @@ export function mergeOptions (
   vm?: Component
 ): Object {
   if (process.env.NODE_ENV !== 'production') {
+    // 验证组件组件名字是否符合要求 不能是保留的tagName、或者是slot、component
     checkComponents(child)
   }
 
   if (typeof child === 'function') {
     child = child.options
   }
-
+  // child.props = {camelize: {type:}}
   normalizeProps(child, vm)
   normalizeInject(child, vm)
+  // child.directives = {key: {bind: def, update: def}}
   normalizeDirectives(child)
 
   // Apply extends and mixins on the child options,
@@ -442,7 +452,7 @@ export function mergeOptions (
 export function resolveAsset (
   options: Object,
   type: string,
-  id: string,
+  id: string, // dir.name
   warnMissing?: boolean
 ): any {
   /* istanbul ignore if */
@@ -452,8 +462,10 @@ export function resolveAsset (
   const assets = options[type]
   // check local registration variations first
   if (hasOwn(assets, id)) return assets[id]
+  // 蛇形转化为驼峰式
   const camelizedId = camelize(id)
   if (hasOwn(assets, camelizedId)) return assets[camelizedId]
+  // 转化为大驼峰
   const PascalCaseId = capitalize(camelizedId)
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
   // fallback to prototype chain

@@ -16,7 +16,11 @@ export default {
     registerRef(vnode, true)
   }
 }
-
+/**
+ * 
+ * @param {*} vnode 
+ * @param {*} isRemoval 是否移除ref
+ */
 export function registerRef (vnode: VNodeWithData, isRemoval: ?boolean) {
   const key = vnode.data.ref
   if (!isDef(key)) return
@@ -31,6 +35,7 @@ export function registerRef (vnode: VNodeWithData, isRemoval: ?boolean) {
       refs[key] = undefined
     }
   } else {
+    // v-for渲染出来
     if (vnode.data.refInFor) {
       if (!Array.isArray(refs[key])) {
         refs[key] = [ref]
@@ -38,7 +43,7 @@ export function registerRef (vnode: VNodeWithData, isRemoval: ?boolean) {
         // $flow-disable-line
         refs[key].push(ref)
       }
-    } else {
+    } else {// 正常渲染
       refs[key] = ref
     }
   }

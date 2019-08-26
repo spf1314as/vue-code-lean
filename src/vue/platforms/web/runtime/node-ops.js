@@ -13,7 +13,7 @@ export function createElement (tagName: string, vnode: VNode): Element {
   }
   return elm
 }
-
+// 创建使用命名空间的元素
 export function createElementNS (namespace: string, tagName: string): Element {
   return document.createElementNS(namespaceMap[namespace], tagName)
 }

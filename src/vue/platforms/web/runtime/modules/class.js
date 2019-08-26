@@ -27,6 +27,7 @@ function updateClass (oldVnode: any, vnode: any) {
     return
   }
 
+  // 获取模板中的class "name age year month day hour minute second"
   let cls = genClassForVnode(vnode)
 
   // handle transition classes

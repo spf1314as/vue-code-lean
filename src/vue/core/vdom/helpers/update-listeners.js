@@ -11,6 +11,10 @@ import {
   isPlainObject
 } from 'shared/util'
 
+/**
+ * 解析出真正的event
+ * 检查修饰符是否存在
+ */
 const normalizeEvent = cached((name: string): {
   name: string,
   once: boolean,
@@ -74,14 +78,17 @@ export function updateListeners (
         vm
       )
     } else if (isUndef(old)) {
+      // cur.fns => true 表示已经createFnInvoker
       if (isUndef(cur.fns)) {
+        // 包装一层 容错
         cur = on[name] = createFnInvoker(cur, vm)
       }
       if (isTrue(event.once)) {
         cur = on[name] = createOnceHandler(event.name, cur, event.capture)
       }
+      // 增加事件监听
       add(event.name, cur, event.capture, event.passive, event.params)
-    } else if (cur !== old) {
+    } else if (cur !== old) { // why?
       old.fns = cur
       on[name] = old
     }
@@ -89,6 +96,7 @@ export function updateListeners (
   for (name in oldOn) {
     if (isUndef(on[name])) {
       event = normalizeEvent(name)
+      // removeEventListeners
       remove(event.name, oldOn[name], event.capture)
     }
   }

@@ -203,7 +203,7 @@ export function genFor (
     state.maybeComponent(el) &&
     el.tag !== 'slot' &&
     el.tag !== 'template' &&
-    !el.key
+    !el.key // 如果没有key，给出警告
   ) {
     state.warn(
       `<${el.tag} v-for="${alias} in ${exp}">: component lists rendered with ` +
@@ -215,6 +215,9 @@ export function genFor (
   }
 
   el.forProcessed = true // avoid recursion
+  //_l = renderList(val, render(val,keyOrIndex, index)) 
+  // 对象时 keyOrIndex 为key 
+  // genFor(el, state)
   return `${altHelper || '_l'}((${exp}),` +
     `function(${alias}${iterator1}${iterator2}){` +
       `return ${(altGen || genElement)(el, state)}` +
@@ -256,7 +259,8 @@ export function genData (el: ASTElement, state: CodegenState): string {
   if (el.attrs) {
     data += `attrs:${genProps(el.attrs)},`
   }
-  // DOM props
+  // DOM props 
+  // props => array [{name, value, dynamic, start, end}]
   if (el.props) {
     data += `domProps:${genProps(el.props)},`
   }
@@ -584,7 +588,7 @@ function genComponent (
     children ? `,${children}` : ''
   })`
 }
-
+// 区分动态、静态属性
 function genProps (props: Array<ASTAttr>): string {
   let staticProps = ``
   let dynamicProps = ``
@@ -594,14 +598,17 @@ function genProps (props: Array<ASTAttr>): string {
       ? generateValue(prop.value)
       : transformSpecialNewlines(prop.value)
     if (prop.dynamic) {
-      dynamicProps += `${prop.name},${value},`
+      dynamicProps += `${prop.name},${value},` // "name,value"
     } else {
       staticProps += `"${prop.name}":${value},`
     }
   }
-  staticProps = `{${staticProps.slice(0, -1)}}`
+  staticProps = `{${staticProps.slice(0, -1)}}` // "{name:value, name:value, name:value,}"
   if (dynamicProps) {
-    return `_d(${staticProps},[${dynamicProps.slice(0, -1)}])`
+    // _d => bindDynamicKeys => {key: value, key:value} 
+    // 对于动态绑定值，进行一次取值调用get触发依赖收集 转化为响应式值
+    // baseObj[values[i]] = values[i + 1]
+    return `_d(${staticProps},[${dynamicProps.slice(0, -1)}])` // _d({name: value}, [key, value, key, value, key, value])
   } else {
     return staticProps
   }

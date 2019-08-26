@@ -32,6 +32,12 @@ function mergeClassData (child: VNodeData, parent: VNodeData): {
   }
 }
 
+/**
+ * 
+ * @param {*} staticClass 
+ * @param {*} dynamicClass
+ * @return {string} "name age year month day hour minuter second" 
+ */
 export function renderClass (
   staticClass: ?string,
   dynamicClass: any

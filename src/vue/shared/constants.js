@@ -3,7 +3,7 @@ export const SSR_ATTR = 'data-server-rendered'
 export const ASSET_TYPES = [
   'component',
   'directive',
-  'filter'
+  'filter' // 过滤器
 ]
 
 export const LIFECYCLE_HOOKS = [

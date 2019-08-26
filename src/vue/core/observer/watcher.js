@@ -59,7 +59,7 @@ export default class Watcher {
     // options
     if (options) {
       this.deep = !!options.deep
-      this.user = !!options.user
+      this.user = !!options.user // $watch 自定义的watch
       this.lazy = !!options.lazy
       this.sync = !!options.sync
       this.before = options.before
