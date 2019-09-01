@@ -27,7 +27,8 @@ export function validateProp (
   const prop = propOptions[key]
   const absent = !hasOwn(propsData, key)
   let value = propsData[key]
-  // boolean casting
+  // boolean casting 
+  // props:{game: {type:[boolean, array, object], default: ..., required: boolean}}
   const booleanIndex = getTypeIndex(Boolean, prop.type)
   if (booleanIndex > -1) {
     if (absent && !hasOwn(prop, 'default')) {
@@ -43,6 +44,7 @@ export function validateProp (
   }
   // check default value
   if (value === undefined) {
+    // 获取默认值 如果是函数的话  就行求值  可以使用this
     value = getPropDefaultValue(vm, prop, key)
     // since the default value is a fresh copy,
     // make sure to observe it.

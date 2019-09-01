@@ -8,18 +8,18 @@ import { isUpdatingChildComponent } from './lifecycle'
 import {
   set,
   del,
-  observe,
-  defineReactive, // Dep class
-  toggleObserving
+  observe, // 将value转化为响应式数据
+  defineReactive, // 将对象转化为响应式数据
+  toggleObserving // 是否使用observe new Observer
 } from '../observer/index'
 
 import {
   warn,
   bind,
-  noop,
-  hasOwn,
+  noop, // 空函数
+  hasOwn, // 是不是该属性
   hyphenate,
-  isReserved,
+  isReserved, // 是不是保留字段
   handleError,
   nativeWatch,
   validateProp,
@@ -71,7 +71,7 @@ export function initState (vm: Component) {
     initWatch(vm, opts.watch)
   }
 }
-
+//todo  vm.$options.propsData vm._props的区别
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
@@ -84,7 +84,13 @@ function initProps (vm: Component, propsOptions: Object) {
     toggleObserving(false) // todo
   }
   for (const key in propsOptions) {
-    keys.push(key)
+    keys.push(key) 
+    /** validateProp
+     * 1. 验证props中属性的类型
+     * 2. 没有值使用默认值 
+     * 3. 将属性值如果转变为响应式
+     *  */
+     
     const value = validateProp(key, propsOptions, propsData, vm)
     /* istanbul ignore else */
     if (process.env.NODE_ENV !== 'production') {
@@ -108,6 +114,7 @@ function initProps (vm: Component, propsOptions: Object) {
         }
       })
     } else {
+      // 将属性挂载到vm上，并转化为响应式
       defineReactive(props, key, value)
     }
     // static props are already proxied on the component's prototype
@@ -312,7 +319,12 @@ function initMethods (vm: Component, methods: Object) {
     vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm)
   }
 }
-
+/**
+ * 1. 获取handler
+ * 2. 根据handler的类型 创建watcher
+ * @param {Component} vm 
+ * @param {Object} watch 
+ */
 function initWatch (vm: Component, watch: Object) {
   for (const key in watch) {
     const handler = watch[key]
@@ -343,7 +355,7 @@ function createWatcher (
 }
 
 /**
- * 1.原型对象上定义 $data、$props、$set、$delete
+ * 1. 原型对象上定义 $data、$props、$set、$delete
  * 2. $watch
  * @param {function} Vue 
  */
@@ -384,7 +396,7 @@ export function stateMixin (Vue: Class<Component>) {
       return createWatcher(vm, expOrFn, cb, options)
     }
     options = options || {}
-    // options.user 标识该watcher是用户自定义的
+    // options.user 标识该watcher是用户通过$watch自定义的
     options.user = true
     const watcher = new Watcher(vm, expOrFn, cb, options)
     if (options.immediate) {

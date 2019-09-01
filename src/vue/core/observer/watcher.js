@@ -29,7 +29,7 @@ export default class Watcher {
   cb: Function;
   id: number;
   deep: boolean;
-  user: boolean; // 是不是自定的watcher
+  user: boolean; // 是不是通过$watch定义的watcher
   lazy: boolean;
   sync: boolean;
   dirty: boolean;
