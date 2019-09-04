@@ -191,7 +191,12 @@ export function getData (data: Function, vm: Component): any {
 }
 
 const computedWatcherOptions = { lazy: true }
-
+/**
+ * 
+ * 1. 计算属性的key,最后才比较,优先级低于data、props
+ * 2. 定义计算属性的watch
+ * 3. 计算属性绑定到vm上 vm[key] = XXX
+ */
 function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
   const watchers = vm._computedWatchers = Object.create(null)
@@ -200,6 +205,16 @@ function initComputed (vm: Component, computed: Object) {
 
   for (const key in computed) {
     const userDef = computed[key]
+    /**
+     * computed: {
+     *    [key: string] : Function,
+     *    [key: string]: {
+     *      get: Function,
+     *      set: Function
+     *    }
+     * }
+     * 
+     */
     const getter = typeof userDef === 'function' ? userDef : userDef.get
     if (process.env.NODE_ENV !== 'production' && getter == null) {
       warn(
@@ -212,9 +227,9 @@ function initComputed (vm: Component, computed: Object) {
       // create internal watcher for the computed property.
       watchers[key] = new Watcher(
         vm,
-        getter || noop,
-        noop,
-        computedWatcherOptions
+        getter || noop, // expOrFn
+        noop, // cb
+        computedWatcherOptions // options {lazy: true}
       )
     }
 
@@ -263,6 +278,8 @@ export function defineComputed (
   }
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
+// 能够缓存
+// 每次取值时 就行求值 触发watcher、收集依赖
 
 function createComputedGetter (key) {
   return function computedGetter () {

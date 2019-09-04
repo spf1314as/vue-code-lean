@@ -30,7 +30,7 @@ export default class Watcher {
   id: number;
   deep: boolean;
   user: boolean; // 是不是通过$watch定义的watcher
-  lazy: boolean;
+  lazy: boolean; // 计算属性定义时的watcher，lazy默认值为 true
   sync: boolean;
   dirty: boolean;
   active: boolean;
