@@ -118,9 +118,10 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   let ob: Observer | void
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
-  } else if (
+  } else if ( // 必须是数组 or 对象才进行响应式转化
     shouldObserve &&
     !isServerRendering() &&
+
     (Array.isArray(value) || isPlainObject(value)) &&
     Object.isExtensible(value) &&
     !value._isVue

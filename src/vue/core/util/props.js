@@ -44,7 +44,7 @@ export function validateProp (
   }
   // check default value
   if (value === undefined) {
-    // 获取默认值 如果是函数的话  就行求值  可以使用this
+    // 获取默认值 如果是函数的话  进行求值  可以使用this
     value = getPropDefaultValue(vm, prop, key)
     // since the default value is a fresh copy,
     // make sure to observe it.
