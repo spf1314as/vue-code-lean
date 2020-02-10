@@ -27,9 +27,10 @@ export default class Dep {
   removeSub (sub: Watcher) {
     remove(this.subs, sub)
   }
-
+// 实际调用的是this.addSub,将watch进行订阅
   depend () {
     if (Dep.target) {
+      
       Dep.target.addDep(this)
     }
   }

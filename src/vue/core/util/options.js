@@ -12,7 +12,7 @@ import {
 } from 'shared/constants'
 
 import {
-  extend,
+  extend, // function (to, from) {for () {to[key] = from[key]} retutn to}
   hasOwn,
   camelize,
   toRawType,
@@ -48,11 +48,13 @@ if (process.env.NODE_ENV !== 'production') {
  * Helper that recursively merges two data objects together.
  * 检查__ob__ 是否是响应式
  * 深拷贝form 到 to
+ * 深拷贝 避免  引用类型 共享
+ * 
  */
 function mergeData (to: Object, from: ?Object): Object {
   if (!from) return to
   let key, toVal, fromVal
-
+  // from
   const keys = hasSymbol
     ? Reflect.ownKeys(from)
     : Object.keys(from)
@@ -145,6 +147,7 @@ strats.data = function (
 
 /**
  * Hooks and props are merged as arrays.
+ * 合并生命周期hook fn
  */
 function mergeHook (
   parentVal: ?Array<Function>,
@@ -158,7 +161,7 @@ function mergeHook (
         : [childVal]
     : parentVal
   return res
-    ? dedupeHooks(res) //相同的hook只能出现一次
+    ? dedupeHooks(res) //相同的hook  回调函数  只能出现一次
     : res
 }
 
@@ -171,7 +174,11 @@ function dedupeHooks (hooks) {
   }
   return res
 }
-
+/**
+ * beforeCreate created beforeMounted mounted ...
+ * 每种声明周期钩子  添加 回调
+ * 
+ */
 LIFECYCLE_HOOKS.forEach(hook => {
   strats[hook] = mergeHook
 })
@@ -240,6 +247,7 @@ strats.watch = function (
 
 /**
  * Other object hashes.
+ *  1. props methods inject computed 以child的key值为准
  */
 strats.props =
 strats.methods =
@@ -251,7 +259,7 @@ strats.computed = function (
   key: string
 ): ?Object {
   if (childVal && process.env.NODE_ENV !== 'production') {
-    assertObjectType(key, childVal, vm)
+    assertObjectType(key, childVal, vm) // 判断是不是对象
   }
   if (!parentVal) return childVal
   const ret = Object.create(null)

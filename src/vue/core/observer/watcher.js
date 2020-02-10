@@ -131,7 +131,8 @@ export default class Watcher {
 
   /**
    * Add a dependency to this directive.
-   * 
+   * **Ids => Set
+   * **Deps => []
    */
   addDep (dep: Dep) {
     const id = dep.id
@@ -224,6 +225,7 @@ export default class Watcher {
 
   /**
    * Depend on all deps collected by this watcher.
+   * 将dep实例添加到dep.subs队列中
    */
   depend () {
     let i = this.deps.length

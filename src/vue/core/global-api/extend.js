@@ -36,6 +36,8 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
+    // 合并选项
+    // mergeOptions(parent, child)
     Sub.options = mergeOptions(
       Super.options,
       extendOptions

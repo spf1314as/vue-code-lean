@@ -307,7 +307,7 @@ export function createPatchFunction (backend) {
     }
     return isDef(vnode.tag)
   }
-// 调用create钩子 已经组件上自定义的钩子
+// 调用create钩子 以及组件上自定义的钩子
   function invokeCreateHooks (vnode, insertedVnodeQueue) {
     for (let i = 0; i < cbs.create.length; ++i) {
       cbs.create[i](emptyNode, vnode)

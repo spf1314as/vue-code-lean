@@ -194,7 +194,7 @@ export function getData (data: Function, vm: Component): any {
 const computedWatcherOptions = { lazy: true }
 /**
  * 
- * 1. 计算属性的key,最后才比较,优先级低于data、props
+ * 1. 计算属性的key,最后才比较,优先级低于data、props、methods
  * 2. 定义计算属性的watch
  * 3. 计算属性绑定到vm上 vm[key] = XXX
  */
@@ -254,7 +254,7 @@ export function defineComputed (
   key: string,
   userDef: Object | Function
 ) {
-  const shouldCache = !isServerRendering()
+  const shouldCache = !isServerRendering() // web端需要缓存，ssr不需要缓存
   if (typeof userDef === 'function') {
     sharedPropertyDefinition.get = shouldCache
       ? createComputedGetter(key)
@@ -280,7 +280,8 @@ export function defineComputed (
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 // 能够缓存
-// 每次取值时 就行求值 触发watcher、收集依赖
+// 第一次不进行求值，当需要获取值的时候，才进行取值操作
+// 每次取值时 进行求值 触发watcher、收集依赖
 
 function createComputedGetter (key) {
   return function computedGetter () {
@@ -291,6 +292,8 @@ function createComputedGetter (key) {
       }
       if (Dep.target) {
         // 搜集watcher的所有依赖 将watcher添加进去 变化时会调用watcher.update
+        // 调用watcher.update将watcher.dirty改为true
+        // 下次去取值的时候 触发求值操作
         watcher.depend()
       }
       return watcher.value

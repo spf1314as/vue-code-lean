@@ -10,10 +10,11 @@ export let isUsingMicroTask = false
 const callbacks = []
 let pending = false
 
+// 触发队列中的函数
 function flushCallbacks () {
   pending = false
   const copies = callbacks.slice(0)
-  callbacks.length = 0
+  callbacks.length = 0  // 
   for (let i = 0; i < copies.length; i++) {
     copies[i]()
   }
