@@ -230,7 +230,7 @@ export default class Watcher {
   depend () {
     let i = this.deps.length
     while (i--) {
-      this.deps[i].depend()
+      this.deps[i].depend()  // Dep.target.addDep(this.deps[i])
     }
   }
 

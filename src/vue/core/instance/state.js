@@ -88,7 +88,7 @@ function initProps (vm: Component, propsOptions: Object) {
     keys.push(key) 
     /** validateProp
      * 1. 验证props中属性的类型
-     * 2. 没有值使用默认值 
+     * 2. 没有值使用默认值，默认值是函数时，fn.call(vm)
      * 3. 将属性值如果转变为响应式
      *  */
      

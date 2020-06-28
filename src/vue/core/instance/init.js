@@ -51,9 +51,9 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
-    initLifecycle(vm) // 重置声明周期参数
-    initEvents(vm) //更新events
-    initRender(vm) //定义绑定this到nextTick
+    initLifecycle(vm) // 重置生命周期参数、实例参数
+    initEvents(vm) // 初始化events事件集合
+    initRender(vm) // 初始化渲染相关属性
     callHook(vm, 'beforeCreate') // 调用声明周期hook同时会触发hook:beforeCreate的on事件
     initInjections(vm) // resolve injections before data/props
     initState(vm) // 初始化props data method computed

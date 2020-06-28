@@ -38,11 +38,17 @@ function sameVnode (a, b) {
   return (
     a.key === b.key && (
       (
+        // 标签是不是相同
         a.tag === b.tag &&
+        // 是不是注释节点
         a.isComment === b.isComment &&
+        // 是否有值
         isDef(a.data) === isDef(b.data) &&
+        // 判断是不是相同的input元素类型
         sameInputType(a, b)
+
       ) || (
+        // isAsyncPlaceholder 是 true
         isTrue(a.isAsyncPlaceholder) &&
         a.asyncFactory === b.asyncFactory &&
         isUndef(b.asyncFactory.error)
@@ -532,6 +538,7 @@ export function createPatchFunction (backend) {
     // 异步加载
     if (isTrue(oldVnode.isAsyncPlaceholder)) {
       if (isDef(vnode.asyncFactory.resolved)) {
+        // 把dom转化为虚拟dom
         hydrate(oldVnode.elm, vnode, insertedVnodeQueue)
       } else {
         vnode.isAsyncPlaceholder = true
@@ -719,13 +726,14 @@ export function createPatchFunction (backend) {
 
     let isInitialPatch = false
     const insertedVnodeQueue = []
-
+    // 旧的没有 直接创建新的
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true
       createElm(vnode, insertedVnodeQueue)
     } else {
       const isRealElement = isDef(oldVnode.nodeType)
+      // 不是真实dom 并且 新旧是统一个vnode  就进行差异比较
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)

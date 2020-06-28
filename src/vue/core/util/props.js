@@ -17,7 +17,13 @@ type PropOptions = {
   required: ?boolean,
   validator: ?Function
 };
-
+/**
+ * 
+ * @desc 1. 验证props中属性的类型
+ * @desc 2. 没有值使用默认值 
+ * @desc 3. 将属性值如果转变为响应式
+ * 
+ */
 export function validateProp (
   key: string,
   propOptions: Object,
